@@ -11,6 +11,7 @@ CREATE TABLE player (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL,
     gameid INT,
+    accesskey VARCHAR(20) NOT NULL,
     FOREIGN KEY (gameid) REFERENCES game(id)
 );
 CREATE TABLE mass (
@@ -18,5 +19,6 @@ CREATE TABLE mass (
     posx INT NOT NULL,
     posy INT NOT NULL,
     playerid INT,
+    mass INT,
     FOREIGN KEY (playerid) REFERENCES player(id) ON DELETE CASCADE
 );
