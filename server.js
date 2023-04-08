@@ -42,7 +42,7 @@ io.on('connection',client => {
     console.log("Conection!");
 
     client.on('join-game-request',joinGameHandler);
-    client.on('update-request', sendUpdateHandler);
+    client.on('update-request', (data)=>sendUpdateHandler(client,data));
     client.on('event', eventHandler);
     client.on('disconnect', disconnectHandler);
     client.on('set-profile', (data)=>{
@@ -80,29 +80,54 @@ function joinGameHandler(data){
 console.log("res");
 }
 
-function sendUpdateHandler(data){
-// send update data to client
-// input data = {name , accesskey}
-let isValid = data.accesskey.split("").length==20;
-for(let i=0;i<20;i++){
-    let inArray = false;
-    for(let char of characters){
-        if(char==data.accesskey[i]){
-            inArray = true;
-            break;
+function sendUpdateHandler(client,data){
+    // send update data to client
+    // input data = {name , accesskey}
+    let isValid = data.accesskey.split("").length==20;
+    for(let i=0;i<20;i++){
+        let inArray = false;
+        for(let char of characters){
+            if(char==data.accesskey[i]){
+                inArray = true;
+                break;
+            }
+        }
+        if(inArray){
+        }else{
+            isValid=false;
         }
     }
-    if(inArray){
-    }else{
-        console.log("not in array");
-        isValid=false;
-    }
-}
-if(isValid){
-    connection.query(`SELECT id FROM player WHERE accesskey='${data.accesskey}' and name='${data.name}';`, (error, results, fields) => {
-        console.log('results: ',results);
-    });  
-}
+    if(isValid){
+        connection.query(`SELECT id,gameid FROM player WHERE accesskey='${data.accesskey}' and name='${data.name}';`, (error, results, fields) => {
+            //console.log('results: ',results);
+            // we need coords of the masses and their names
+            // we need our masses and coords and name
+            let clientId = results[0].id;
+            let gameId = results[0].gameid;
+            // ask for playerid,posX,posY,name,mass from all masses that are in the same game
+            let query = `SELECT mass.id,playerid,posx,posy,name,mass from player join mass on playerid=player.id and gameid=${gameId}`;
+            connection.query(query, (error, results, fields) => {
+                // split the result based of the playerid of the client
+                
+                let otherMasses=[];
+                let clientMasses=[];
+                results.forEach(m => {
+                    if(m.playerid==clientId){
+                        clientMasses.push(m);
+                    }else{
+                        otherMasses.push(m);
+                    }
+                });
+
+                client.emit("update",{
+                    otherMasses:otherMasses,
+                    clientMasses:clientMasses,
+                });                
+            });
+
+        });
+
+        }
 };
 
 function eventHandler(data){

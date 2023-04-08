@@ -30,7 +30,13 @@ body{
     width: calc( 2 * var(--radius) );
     height: calc( 2 * var(--radius) );
     
-    background-color: black;
     border-radius: 50%;
 }
 
+.mass:not(.me){
+    background-color: rgb(243, 120, 120);
+}
+
+.me{
+    background-color: rgb(69, 201, 67);
+}
