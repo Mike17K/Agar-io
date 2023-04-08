@@ -42,7 +42,7 @@ function addMass(conn, data) {
     const sql = `UPDATE mass SET posx = ${data.posx},posy = ${data.posy},mass = ${data.mass} WHERE id = ${data.id};`;
     conn.query(sql, (err, result) => {
       if (err) throw err;
-      console.log(`${result.affectedRows} mass updated`);
+      //console.log(`${result.affectedRows} mass updated`);
     });
   }
 

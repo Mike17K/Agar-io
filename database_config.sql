@@ -5,13 +5,16 @@ CREATE DATABASE agariodb;
 USE agariodb;
 CREATE TABLE game (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(20) NOT NULL
+    name VARCHAR(20) NOT NULL,
+    isrunning BOOLEAN NOT NULL,
 );
 CREATE TABLE player (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL,
     gameid INT,
     accesskey VARCHAR(20) NOT NULL,
+    targetx INT,
+    targety INT,
     FOREIGN KEY (gameid) REFERENCES game(id)
 );
 CREATE TABLE mass (

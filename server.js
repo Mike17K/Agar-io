@@ -28,6 +28,10 @@ connection.connect((err) => {
     
 });
 
+server.listen(3000,()=> console.log("Running on port 3000..."));
+let Hz = 100;
+setInterval(updateState,Math.floor(1000/Hz));
+
 /*
 connection.end((err) => {
   if (err) {
@@ -139,4 +143,21 @@ function disconnectHandler(data){
 console.log("res");
 }
 
-server.listen(3000,()=> console.log("Running on port 3000..."));
+function updateState(){
+    connection.query(`SELECT mass.id,posx,posy,mass.mass,player.targetx,player.targety FROM mass join player join game on playerid = player.id and gameid=game.id and isrunning=true;`, (error, results, fields) => {
+        //console.log(results);
+        for(let mass of results){
+            
+            let speed = mass.mass/20;
+
+            updateMass(connection,
+                {
+                    id:mass.id,
+                    posx:mass.posx + speed/Hz*(mass.targetx-mass.posx), 
+                    posy:mass.posy + speed/Hz*(mass.targety-mass.posy), 
+                    mass:mass.mass
+                }
+                );
+        }
+    });
+};

@@ -6,14 +6,6 @@ let name="test";
 
 socket.on("connect", () => {
   console.log("connected to server");  
-
-  setInterval(()=>{
-    data = {
-      name:name,
-      accesskey:accesskey,
-    }
-    socket.emit("update-request",data);
-  },1000);
 });
 
 socket.on("give-profile",()=>{
@@ -27,6 +19,14 @@ socket.on("give-profile",()=>{
 socket.on("recive-access-key",(key)=>{
   console.log("access-key recieved",accesskey);
   accesskey = key;
+  
+  setInterval(()=>{
+    data = {
+      name:name,
+      accesskey:accesskey,
+    }
+    socket.emit("update-request",data);
+  },10);
 });
 
 socket.on("update",(data)=>{
@@ -91,7 +91,3 @@ gameContainer.style.setProperty("--offsetX", "0px");
 gameContainer.style.setProperty("--offsetY", "0px");
 gameContainer.style.setProperty("--width", "100%");
 gameContainer.style.setProperty("--height", "100%");
-
-document.querySelector("#M-10").style.setProperty("--radius","10px");
-document.querySelector("#M-10").style.top='500px';
-document.querySelector("#M-10").style.left='10px';

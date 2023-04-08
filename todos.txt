@@ -1,1 +1,2 @@
 -- fix the  remove of player in database on deisconect
+-- update again the db functions for the new database structure
